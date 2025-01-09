@@ -27,3 +27,10 @@ The examples:
 * `video3` : Two pipelines, with custom video processing in the middle, no audio  
 * `audio1` : Two audio pipelines, with custom audio processing in the middle, no video  
 * `av1` : Two pipelines, with both audio and video (`video3` + `audio1` combined !)  
+
+Expanded some functions on the basis of the original author
+===============================================
+By Xinjian, 2025.
+
+The new examples added:
+* `zfun1` : An (almost) minimal GStreamer C++ example for playing RTSP stream
