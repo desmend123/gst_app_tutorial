@@ -17,25 +17,36 @@ int main(int argc, char *argv[])
         GstElement *pipeline;
         GstBus *bus;
         GstMessage *msg;
-    
+
         /* Initialize GStreamer */
-        gst_init (&argc, &argv);
-    
+        gst_init(&argc, &argv);
+
+        GError *err = nullptr;
+
         /* Build the pipeline */
-        pipeline = gst_parse_launch (pipeStr.c_str(), NULL);
+        pipeline = gst_parse_launch(pipeStr.c_str(), &err);
+        if (err) {
+            cout << "gst_parse_launch() failed!" << err->message << endl;
+            return -1;
+        }
+
         /* Start playing */
-        gst_element_set_state (pipeline, GST_STATE_PLAYING);
-    
+        if (!gst_element_set_state(pipeline, GST_STATE_PLAYING)){
+            cout << "gst_element_set_state() failed!" << endl;
+            return -1;
+        }
+
         /* Wait until error or EOS */
-        bus = gst_element_get_bus (pipeline);
-        msg = gst_bus_timed_pop_filtered (bus, GST_CLOCK_TIME_NONE, (GstMessageType)(GST_MESSAGE_ERROR | GST_MESSAGE_EOS));
-    
+        bus = gst_element_get_bus(pipeline);
+        msg = gst_bus_timed_pop_filtered(bus, GST_CLOCK_TIME_NONE,
+            (GstMessageType)(GST_MESSAGE_ERROR | GST_MESSAGE_EOS));
+
         /* Free resources */
         cout << "free resource start..." << flush <<  endl;
-        gst_message_unref (msg);
-        gst_object_unref (bus);
-        gst_element_set_state (pipeline, GST_STATE_NULL);
-        gst_object_unref (pipeline);
+        gst_message_unref(msg);
+        gst_object_unref(bus);
+        gst_element_set_state(pipeline, GST_STATE_NULL);
+        gst_object_unref(pipeline);
         cout << "free resource end." << flush << endl;
     }
     return 0;
